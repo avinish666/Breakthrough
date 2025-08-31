@@ -100,10 +100,10 @@ app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 app.use("/payment", paymentRouter);
 
-// 404 Handler
-app.all("*", (req, res, next) => {
-    res.status(404).render("error.ejs", { message: "Page Not Found" });
-});
+// // 404 Handler
+// app.all("*", (req, res, next) => {
+//     res.status(404).render("error.ejs", { message: "Page Not Found" });
+// });
 
 // Error Handler
 app.use((err, req, res, next) => {
