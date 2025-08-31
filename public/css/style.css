@@ -1,0 +1,130 @@
+body{
+     font-family: "Plus Jakarta Sans", sans-serif !important;
+     display: flex;
+     min-height: 10vh;
+     flex-direction: column;
+
+}
+.container{
+    flex:1;
+}
+.navbar{
+    height: 5rem;
+    background-color: white;
+}
+.fa-solid {
+    color:#fe424d;
+    font-size: 2.5rem;
+}
+.nav-link{
+    color:#222222 !important;
+}
+/*footer*/
+.f-info-links a{
+         text-decoration: none;
+         color:#222222;
+}
+.f-info-links a:hover{
+      text-decoration: underline;
+} 
+ .f-info-links, .f-info-socials, .f-info-brand{
+    width: 100%;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+ }
+
+ 
+ .f-info-socials i{
+    margin-right: 1rem; 
+    font-size: 2rem;
+ }
+
+.f-info {
+    display: flex;
+    height: 8rem;
+    background-color: #ebebeb;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+    text-align: center;
+}
+/* cards */
+.listing-card{
+    border:none !important;
+    margin-bottom: 2rem;
+}
+.card-img-top{
+    border-radius: 1rem !important;
+    width:100% !important;
+    object-fit: cover;
+
+}
+.card-body{
+    padding: 0 !important;
+}
+.card-text p{
+    font-weight: 400 !important;
+}
+.listing-link{
+    text-decoration: none;
+}
+.card-img-overlay{
+     opacity: 0;
+}
+.card-img-overlay:hover{
+    opacity: 0.2;
+    background-color: white;
+}
+.add-button{
+    background-color:red !important;
+    border:none !important;
+}
+/*edit button */
+.edit-button{
+    background-color: red;
+    border: none !important;
+}
+/*show image */
+.show-img {
+height:30vh;
+}
+.btns{
+    display:flex;
+}
+.show-card{
+    padding-left: 0 ;
+    padding-right: 0;
+}
+#map {
+    height: 100vh;
+    width: 100vh;
+}
+.filter p{
+    font-size:0.8rem;
+}
+.f-info-socials a {
+  margin-right: 12px;
+  color: #000; /* Default icon color */
+  font-size: 24px;
+  transition: color 0.3s;
+}
+
+.f-info-socials a:hover {
+  color: #25D366; /* WhatsApp green on hover */
+}
+.call-owner-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.call-owner-btn:hover {
+  background-color: #0056b3;
+}

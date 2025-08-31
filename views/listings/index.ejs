@@ -1,0 +1,161 @@
+<% layout('layouts/boilerplate') %>
+<%= success %>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+#filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.filter {
+  text-align: center;
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  opacity: 0.6;
+  transition: all 0.3s;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.filter:hover {
+  opacity: 1;
+  background-color: #f0f0f0;
+}
+
+.filter i {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #007bff;
+}
+
+.filter p {
+  margin: 0;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.tax-info {
+  display: none;
+}
+</style>
+
+<!-- Hero / Search Heading -->
+<% if (typeof location !== 'undefined' && location.trim() !== '') { %>
+  <h2 class="text-center my-4">
+    Showing results for <span class="text-primary fw-bold">"<%= location %>"</span>
+  </h2>
+<% } else { %>
+  <h1 style="text-align: center; font-size: 3rem; color: #ff0000; font-weight: bold;">
+    RENT <span style="color: #007bff;">ANYTHING</span>
+  </h1>
+<% } %>
+
+<!-- No listings message -->
+<% if (allListings.length === 0) { %>
+  <p class="text-center text-danger">No listings found for "<%= location %>"</p>
+<% } %>
+
+<!-- Filters -->
+<div id="filters">
+  <div class="filter">
+    <a href="tel:+917061666783" style="text-decoration:none; color: inherit;">
+      <i class="fa-solid fa-phone"></i>
+      <p>Call</p>
+    </a>
+  </div>
+
+  <div class="filter">
+    <i class="fa-solid fa-user-secret"></i>
+    <p>7061666783</p>
+  </div>
+
+  <div class="filter">
+    <i class="fa-solid fa-pen-fancy"></i>
+    <p>Amity university</p>
+  </div>
+
+  <div class="filter">
+    <i class="fa-solid fa-tractor"></i>
+    <p>Full stack with Naveen sir</p>
+  </div>
+</div>
+
+<!-- Listings -->
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-4">
+  <% allListings.forEach(listing => { %>
+    <div class="col">
+      <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm listing-card">
+          <img src="<%= listing.image && listing.image.url ? listing.image.url : '/images/default.jpg' %>" 
+               class="card-img-top" 
+               style="height: 16rem; object-fit: cover;" 
+               alt="<%= listing.title %>" />
+          <div class="card-body">
+            <h5 class="card-title"><%= listing.title %></h5>
+            <p class="card-text">
+              <% if (listing.price != null) { %>
+                &#8377; <%= listing.price.toLocaleString("en-IN") %> /Month 
+                <i class="tax-info">&nbsp;+18 GST</i>
+              <% } else { %>
+                <em>Price Not Available</em>
+              <% } %>
+            </p>
+          </div>
+          <div class="card-footer text-muted">
+            <%= listing.location %>
+          </div>
+        </div>
+      </a>
+    </div>
+  <% }) %>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
