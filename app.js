@@ -54,7 +54,6 @@ const razorpay = new Razorpay({
 // Session Store
 const store = MongoStore.create({
     mongoUrl: dburl,
-    crypto: { secret: process.env.SECRET || "fallbackSecret" },
     touchAfter: 24 * 3600, // 1 day
 });
 
@@ -67,7 +66,7 @@ const sessionOptions = {
     store,
     secret: process.env.SECRET || "fallbackSecret",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false, // better for login systems
     cookie: {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week
         maxAge: 7 * 24 * 60 * 60 * 1000,
