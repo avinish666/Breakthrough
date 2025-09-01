@@ -6,12 +6,15 @@
   <div class="row justify-content-center mt-3">
     <div class="col-md-8">
 
+      <!-- Current Image -->
+      <div class="mb-3">
+        <img src="<%= listing.image && listing.image.length > 0 ? listing.image[0].url : '/images/default.jpg' %>" 
+             alt="<%= listing.title %>" 
+             style="height: 200px; object-fit: cover;" />
+      </div>
+
       <!-- Title -->
       <div class="mb-3">
-           <img src="<%= listing.image && listing.image.length > 0 ? listing.image[0].url : '/images/default.jpg' %>" 
-       alt="<%= listing.title %>" 
-       style="height: 200px; object-fit: cover;" />
-
         <label for="title" class="form-label">Title</label>
         <input 
           id="title"
@@ -34,25 +37,15 @@
           required
         ><%= listing.description %></textarea>
       </div>
-      
-      <!-- Image -->
+
+      <!-- Upload New Image -->
       <div class="mb-3">
-        Original Listing image  </br>
-        <img src="<%= originalImageUrl %>"/>
-      </div>
-
-
-
-      <!-- Image -->
-      <div class="mb-3">
-        <label for="image" class="form-label"> Upload new image </label>
+        <label for="image" class="form-label">Upload new image</label>
         <input 
           id="image"
           name="listing[image]"  
-         
           type="file" 
-          class="form-control" 
-          
+          class="form-control"
         />
       </div>
 
