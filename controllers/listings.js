@@ -18,27 +18,40 @@ module.exports.createListing = async (req, res) => {
   const newListing = new Listing(req.body.listing);
 
   try {
-    // 1. Geocode using Nominatim
+    // 1. Geocode using Nominatim with User-Agent (required)
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`,
+      {
+        headers: {
+          "User-Agent": "BreakthroughApp/1.0 (avinish666@example.com)", // change email
+          "Accept-Language": "en",
+        },
+      }
     );
+
+    if (!response.ok) {
+      console.error("❌ Geocoding failed:", await response.text());
+      throw new Error("Geocoding API request failed");
+    }
+
     const data = await response.json();
 
-    if (data.length > 0) {
+    if (Array.isArray(data) && data.length > 0) {
       newListing.geometry = {
         type: "Point",
         coordinates: [parseFloat(data[0].lon), parseFloat(data[0].lat)],
       };
     } else {
+      // fallback: Delhi
       newListing.geometry = {
         type: "Point",
-        coordinates: [77.209, 28.6139], // fallback: Delhi
+        coordinates: [77.209, 28.6139],
       };
     }
 
     // 2. Add images from Cloudinary
     if (req.files && req.files.length > 0) {
-      newListing.image = req.files.map(f => ({
+      newListing.image = req.files.map((f) => ({
         url: f.path,
         filename: f.filename,
       }));
@@ -49,10 +62,10 @@ module.exports.createListing = async (req, res) => {
 
     // 4. Save listing
     await newListing.save();
-    req.flash("success", "New listing created");
+    req.flash("success", "New listing created ✅");
     res.redirect(`/listings/${newListing._id}`);
   } catch (err) {
-    console.error("❌ Error creating listing:", err);
+    console.error("❌ Error creating listing:", err.message);
     req.flash("error", "Failed to create listing. Please try again.");
     res.redirect("/listings/new");
   }
