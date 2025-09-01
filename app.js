@@ -93,7 +93,10 @@ app.use((req, res, next) => {
     res.locals.currUser = req.user;
     next();
 });
-
+// Homepage redirect
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
 // Routes
 app.use("/listings", listingsRoutes);
 app.use("/listings/:id/reviews", reviewRouter);
