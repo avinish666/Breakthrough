@@ -8,6 +8,10 @@
 
       <!-- Title -->
       <div class="mb-3">
+           <img src="<%= listing.image && listing.image.length > 0 ? listing.image[0].url : '/images/default.jpg' %>" 
+       alt="<%= listing.title %>" 
+       style="height: 200px; object-fit: cover;" />
+
         <label for="title" class="form-label">Title</label>
         <input 
           id="title"
