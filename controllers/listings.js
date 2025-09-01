@@ -55,24 +55,33 @@ if (req.files && req.files.length > 0) {
 };
 
 // ---------- SHOW ----------
+
 module.exports.showListing = async (req, res) => {
-  const listing = await Listing.findById(req.params.id)
-    .populate({ path: "reviews", populate: { path: "author" } })
-    .populate("owner");
+  try {
+    const listing = await Listing.findById(req.params.id)
+      .populate({ path: "reviews", populate: { path: "author" } })
+      .populate("owner");
 
-  if (!listing) {
-    req.flash("error", "Listing not found");
-    return res.redirect("/listings");
+    if (!listing) {
+      req.flash("error", "Listing not found");
+      return res.redirect("/listings");
+    }
+
+    // ✅ Render once and pass Razorpay key
+    res.render("listings/show.ejs", {
+      listing,
+      currUser: req.user,
+      RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+    });
+  } catch (err) {
+    console.error(err);
+    req.flash("error", "Failed to load listing");
+    res.redirect("/listings");
   }
-
-  res.render("listings/show.ejs", {
-    listing,
-    currUser: req.user,
-    RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
-  });
 };
 
-// ---------- EDIT ----------
+
+// ---------- EDIT -----
 module.exports.renderEditForm = async (req, res) => {
   const listing = await Listing.findById(req.params.id);
   if (!listing) {
@@ -125,53 +134,6 @@ module.exports.searchListings = async (req, res) => {
   const listings = await Listing.find(query);
   res.render("listings/index.ejs", { allListings: listings, location });
 };
-// POST /payment/create-order
-module.exports.createOrder = async (req, res) => {
-  try {
-    const { listingId } = req.body;
-    const listing = await Listing.findById(listingId);
-    if (!listing) return res.status(404).json({ success: false, error: "Listing not found" });
 
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
-    });
 
-    const options = {
-      amount: listing.price * 100, // rupees to paise
-      currency: "INR",
-      receipt: `order_${listing._id}_${Date.now()}`,
-    };
-
-    const order = await razorpay.orders.create(options);
-
-    res.json({
-      success: true,
-      order,
-      key: process.env.RAZORPAY_KEY_ID
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: "Failed to create order" });
-  }
-};
-
-module.exports.verifyPayment = async (req, res) => {
-  try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-
-    const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
-    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
-    const generated_signature = hmac.digest("hex");
-
-    if (generated_signature === razorpay_signature) {
-      res.json({ success: true, message: "Payment verified ✅" });
-    } else {
-      res.status(400).json({ success: false, message: "Payment verification failed ❌" });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-};
-
+  
