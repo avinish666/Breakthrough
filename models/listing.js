@@ -7,12 +7,11 @@ const listingSchema = new mongoose.Schema({
   title: String,
   description: String,
   price: Number,
-image :[
+image :
   {
     url:String,
     filename:String,
   },
-  ],
   location:String,
   country:String,
   reviews:[
