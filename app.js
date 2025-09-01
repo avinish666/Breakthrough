@@ -61,18 +61,21 @@ store.on("error", (err) => {
     console.log("ERROR in MONGO SESSION STORE:", err);
 });
 
-// Session Config
+// very important for Render
+app.set("trust proxy", 1);
+
 const sessionOptions = {
-    store,
-    secret: process.env.SECRET || "fallbackSecret",
-    resave: false,
-    saveUninitialized: false, // better for login systems
-    cookie: {
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production"
-    }
+  store,
+  secret: process.env.SECRET || "fallbackSecret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // only true on HTTPS
+    sameSite: "lax", // allow cookies with redirects
+  },
 };
 
 
