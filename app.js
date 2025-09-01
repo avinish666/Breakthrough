@@ -93,16 +93,17 @@ app.use((req, res, next) => {
     res.locals.currUser = req.user;
     next();
 });
-// Homepage redirect
-app.get("/", (req, res) => {
-    res.redirect("/listings");
-});
+
 // Routes
 app.use("/listings", listingsRoutes);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 app.use("/payment", paymentRouter);
 
+// Homepage redirect
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
 // // 404 Handler
 // app.all("*", (req, res, next) => {
 //     res.status(404).render("error.ejs", { message: "Page Not Found" });
