@@ -107,13 +107,14 @@ if(payBtn){
     e.preventDefault();
 
     const listingId = "<%= listing._id %>";
+    const amount = <%= listing.price %>; // Amount in rupees
 
     try {
       // 1️⃣ Create order on server
       const res = await fetch("/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listingId })
+        body: JSON.stringify({ listingId, amount })
       });
 
       const data = await res.json();
@@ -144,7 +145,7 @@ if(payBtn){
               alert("Payment verified ✅");
             } else {
               alert("Payment verification failed ❌");
-              console.error(verifyData.message);
+              console.error(verifyData.error);
             }
           } catch(err){
             console.error("Verification Error:", err);
@@ -167,3 +168,4 @@ if(payBtn){
 </script>
 
 <script src="/js/map.js"></script>
+
