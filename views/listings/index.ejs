@@ -93,7 +93,11 @@
     <div class="col">
       <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
         <div class="card h-100 shadow-sm listing-card">
-          <img src="<%= listing.image && listing.image.url ? listing.image.url : '/images/default.jpg' %>" 
+               <img src="<%= listing.image && listing.image.length > 0 ? listing.image[0].url : '/images/default.jpg' %>" 
+     class="card-img-top" 
+     style="height: 16rem; object-fit: cover;" 
+     alt="<%= listing.title %>" />
+
                class="card-img-top" 
                style="height: 16rem; object-fit: cover;" 
                alt="<%= listing.title %>" />
