@@ -54,7 +54,7 @@ const razorpay = new Razorpay({
 // Session Store
 const store = MongoStore.create({
     mongoUrl: dburl,
-    crypto: { secret: "mysupersecretcode" },
+    crypto: { secret: process.env.SECRET || "fallbackSecret" },
     touchAfter: 24 * 3600, // 1 day
 });
 
@@ -65,16 +65,17 @@ store.on("error", (err) => {
 // Session Config
 const sessionOptions = {
     store,
-    secret: "mysupersecretcode",
+    secret: process.env.SECRET || "fallbackSecret",
     resave: false,
     saveUninitialized: true,
     cookie: {
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
         secure: process.env.NODE_ENV === "production"
     }
 };
+
 
 app.use(session(sessionOptions));
 app.use(flash());
