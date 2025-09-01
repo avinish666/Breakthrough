@@ -20,9 +20,7 @@ module.exports.createListing = async (req, res) => {
   try {
     // 1. Geocode using Nominatim
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-        location
-      )}`
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
     );
     const data = await response.json();
 
@@ -38,12 +36,12 @@ module.exports.createListing = async (req, res) => {
       };
     }
 
-    // 2. Add image from Cloudinary
-    if (req.file) {
-      newListing.image = {
-        url: req.file.path,
-        filename: req.file.filename,
-      };
+    // 2. Add images from Cloudinary
+    if (req.files && req.files.length > 0) {
+      newListing.image = req.files.map(f => ({
+        url: f.path,
+        filename: f.filename,
+      }));
     }
 
     // 3. Set owner from logged-in user
@@ -54,11 +52,12 @@ module.exports.createListing = async (req, res) => {
     req.flash("success", "New listing created");
     res.redirect(`/listings/${newListing._id}`);
   } catch (err) {
-    console.error("Error creating listing:", err);
+    console.error("❌ Error creating listing:", err);
     req.flash("error", "Failed to create listing. Please try again.");
     res.redirect("/listings/new");
   }
 };
+
 
 // SHOW
 module.exports.showListing = async (req, res) => {
@@ -109,12 +108,13 @@ module.exports.updateListing = async (req, res) => {
   const { id } = req.params;
 
   let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-  if (typeof req.file !== "undefined") {
-    let url = req.file.path;
-    let filename = req.file.filename;
-    listing.image = { url, filename };
+
+  if (req.files && req.files.length > 0) {
+    const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    listing.image.push(...imgs); // append new images
     await listing.save();
   }
+
   req.flash("success", "Listing updated");
   res.redirect(`/listings/${id}`);
 };
