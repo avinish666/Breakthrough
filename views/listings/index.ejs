@@ -93,10 +93,10 @@
     <div class="col">
       <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
         <div class="card h-100 shadow-sm listing-card">
-               <img src="<%= listing.image && listing.image.length > 0 ? listing.image[0].url : '/images/default.jpg' %>" 
-     class="card-img-top" 
-     style="height: 16rem; object-fit: cover;" 
-     alt="<%= listing.title %>" />
+          <img src="<%= listing.image && listing.image.length > 0 ? listing.image[0].url : '/images/default.jpg' %>" 
+               class="card-img-top" 
+               style="height: 16rem; object-fit: cover;" 
+               alt="<%= listing.title %>" />
           <div class="card-body">
             <h5 class="card-title"><%= listing.title %></h5>
             <p class="card-text">
@@ -116,6 +116,7 @@
     </div>
   <% }) %>
 </div>
+
 
 
 
