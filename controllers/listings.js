@@ -146,7 +146,17 @@ module.exports.createOrder = async (req, res) => {
     const order = await razorpay.orders.create(options);
 
     res.json({
-      success: true,module.exports.verifyPayment = async (req, res) => {
+      success: true,
+      order,
+      key: process.env.RAZORPAY_KEY_ID
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: "Failed to create order" });
+  }
+};
+
+module.exports.verifyPayment = async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
@@ -164,3 +174,4 @@ module.exports.createOrder = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
