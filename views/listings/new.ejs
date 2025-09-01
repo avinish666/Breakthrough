@@ -36,15 +36,9 @@
       <!-- Image Upload -->
       <div class="mb-3">
         <label for="image" class="form-label"> Upload listing image </label>
-        <input
-          id="image"
-          name="image[]"        <!-- ✅ changed -->
-          type="file" 
-          class="form-control"  
-          multiple  
-          accept="image/*" <!-- ✅ allows multiple images -->
-          required
-        /> 
+       <!-- ✅ changed -->
+<input id="image" name="image[]" type="file" class="form-control" multiple accept="image/*" required />
+
       </div> 
 
       <!-- Price and Country -->
