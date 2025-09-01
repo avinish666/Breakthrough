@@ -35,16 +35,10 @@ module.exports.createListing = async (req, res) => {
       newListing.geometry = { type: "Point", coordinates: [77.209, 28.6139] }; // fallback Delhi
     }
 
-    if (req.file) { // single file upload
-  newListing.image = {
-    url: req.file.path,       // Cloudinary URL
-    filename: req.file.filename
-  };
+if (req.files && req.files.length > 0) {
+  newListing.image = req.files.map(f => ({ url: f.path, filename: f.filename }));
 } else {
-  newListing.image = {
-    url: "/images/default.jpg",
-    filename: "default"
-  };
+  newListing.image = [{ url: "/images/default.jpg", filename: "default" }];
 }
 
 
