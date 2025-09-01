@@ -125,11 +125,12 @@ module.exports.searchListings = async (req, res) => {
   const listings = await Listing.find(query);
   res.render("listings/index.ejs", { allListings: listings, location });
 };
-// ---------- CREATE ORDER ----------
+// POST /payment/create-order
 module.exports.createOrder = async (req, res) => {
   try {
-    const listing = await Listing.findById(req.params.id);
-    if (!listing) return res.status(404).json({ error: "Listing not found" });
+    const { listingId } = req.body;
+    const listing = await Listing.findById(listingId);
+    if (!listing) return res.status(404).json({ success: false, error: "Listing not found" });
 
     const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
@@ -137,7 +138,7 @@ module.exports.createOrder = async (req, res) => {
     });
 
     const options = {
-      amount: listing.price * 100, // INR in paise
+      amount: listing.price * 100, // rupees to paise
       currency: "INR",
       receipt: `order_${listing._id}_${Date.now()}`,
     };
@@ -145,29 +146,13 @@ module.exports.createOrder = async (req, res) => {
     const order = await razorpay.orders.create(options);
 
     res.json({
-      success: true,
-      order,
-      key: process.env.RAZORPAY_KEY_ID,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: "Failed to create order" });
-  }
-};
-
-// ---------- VERIFY PAYMENT ----------
-module.exports.verifyPayment = async (req, res) => {
+      success: true,module.exports.verifyPayment = async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
     const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
     hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
     const generated_signature = hmac.digest("hex");
-
-    console.log("Order ID:", razorpay_order_id);
-    console.log("Payment ID:", razorpay_payment_id);
-    console.log("Received Signature:", razorpay_signature);
-    console.log("Generated Signature:", generated_signature);
 
     if (generated_signature === razorpay_signature) {
       res.json({ success: true, message: "Payment verified ✅" });
