@@ -8,7 +8,7 @@
 
     <!-- Listing Card -->
     <div class="card shadow-sm listing-card">
-      <img src="<%= listing.image && listing.image.url ? listing.image.url : '/images/default.jpg' %>" 
+      <img src="<%= listing.image && listing.image.length > 0 ? listing.image[0].url : '/images/default.jpg' %>" 
            class="card-img-top show-img" 
            alt="listing image" 
            style="height: 400px; object-fit: cover;" />
@@ -72,7 +72,7 @@
     <!-- Display Reviews -->
     <div class="row">
       <p><b>All Reviews</b></p>
-      <% for(review of listing.reviews) { %>
+      <% for(let review of listing.reviews) { %>
         <div class="card col-5 ms-3 mb-3">
           <div class="card-body">
             <h5 class="card-title">@<%= review.author.username %></h5>
@@ -106,7 +106,6 @@ if(payBtn){
   payBtn.addEventListener("click", async (e) => {
     e.preventDefault();
 
-    const amount = <%= listing.price || 500 %>; // rupees
     const listingId = "<%= listing._id %>";
 
     try {
@@ -114,32 +113,43 @@ if(payBtn){
       const res = await fetch("/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, listingId })
+        body: JSON.stringify({ listingId })
       });
 
       const data = await res.json();
       if(!data.success) throw new Error(data.error || "Failed to create order");
 
-      // 2️⃣ Setup Razorpay options (using variable passed from backend)
+      // 2️⃣ Setup Razorpay options
       const options = {
-        key: "<%= RAZORPAY_KEY_ID %>",   // ✅ FIXED
-        amount: data.order.amount,       // already in paise
+        key: "<%= RAZORPAY_KEY_ID %>",
+        amount: data.order.amount,
         currency: data.order.currency,
         name: "Avinish Private Limited",
         description: "Payment for listing",
         order_id: data.order.id,
         handler: async function(response){
-          alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+          try {
+            const verifyRes = await fetch("/payment/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            });
 
-          // Optional: save payment info to backend
-          await fetch("/payment/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              razorpay_payment_id: response.razorpay_payment_id,
-              order_id: data.order.id
-            })
-          });
+            const verifyData = await verifyRes.json();
+            if(verifyData.success){
+              alert("Payment verified ✅");
+            } else {
+              alert("Payment verification failed ❌");
+              console.error(verifyData.message);
+            }
+          } catch(err){
+            console.error("Verification Error:", err);
+            alert("Payment verification failed ❌");
+          }
         },
         theme: { color: "#007bff" }
       };
