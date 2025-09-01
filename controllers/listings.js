@@ -1,5 +1,4 @@
 const Listing = require("../models/listing");
-const fetch = require("node-fetch");
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
 
@@ -20,7 +19,7 @@ module.exports.createListing = async (req, res) => {
   const newListing = new Listing(req.body.listing);
 
   try {
-    // Geocode location
+    // ✅ Node 22 built-in fetch
     const response = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`,
       { headers: { "User-Agent": "BreakthroughApp/1.0 (avinish666@example.com)" } }
@@ -96,11 +95,9 @@ module.exports.updateListing = async (req, res) => {
     await listing.save();
   }
 
-  // Remove images if user selected (from edit form checkboxes)
+  // Remove images if selected
   if (req.body.deleteImages) {
     for (let filename of req.body.deleteImages) {
-      // Delete from Cloudinary
-      // await cloudinary.uploader.destroy(filename);
       listing.image = listing.image.filter(img => img.filename !== filename);
     }
     await listing.save();
